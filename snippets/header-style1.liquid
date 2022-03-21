@@ -1,0 +1,128 @@
+{% section 'header' %}
+<!-- sportstore 1-->
+<header id="header" class="header header-style1{% if settings.header_float_enable %} header-fixed{% endif %}">
+  <div class="desktop-mode">
+    <div class="header-top d-none d-lg-block">
+      <div class="container">
+        <div class="header-top-left">
+          <div id="menu-menu-top-left">
+            {% if settings.display_language %}
+            <div class="toplink-item language no__at">
+              {% include "language-theme" %}
+            </div>
+            {% endif %}
+            {% if settings.display_currency %}
+            <div class="toplink-item checkout currency">
+              {% include "currency-picker" %}
+            </div>
+            {% endif %}
+          </div>
+        </div>      
+        <div class="header-top-right">
+          <ul class="toplinks-wrapper">
+            <li class="wellcome-text title-header">
+              <span>{{ settings.text_msg }}</span>
+            </li>
+            {% if settings.display_acc %}
+            {% include 'header-toplink' %}
+            {% endif %}
+            {% if settings.display_wishlist %}
+            <li class="wishlist"><a class="title-header" href="/pages/wishlist" title="">{{ 'layout.customer.wishlist' | t }}</a></li>
+            {% endif %}
+          </ul>
+        </div>  
+      </div>
+    </div>
+    <div class="header-bottom">
+      <div class="container">
+        <div class="header-left">
+          <div class="navbar-logo">
+            <div class="site-header-logo title-heading" itemscope itemtype="http://schema.org/Organization">
+              {% if settings.logo and settings.logo_img %}
+              <a href="/" itemprop="url" class="site-header-logo-image">
+                {% capture image_size %}{{ settings.logo_max_width }}x{% endcapture %}
+                <img src="{{ settings.logo | img_url: image_size }}"
+                     srcset="{{ settings.logo | img_url: image_size }}"
+                     alt="{{ settings.logo.alt | default: shop.name }}"
+                     itemprop="logo">
+              </a>
+              {% else %}
+              <h2><a class="site-header-logo-link" href="/">{{ settings.logo_text }}</a></h2>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="header-bottom-left horizontal_menu">
+            {% section 'ss-mainmenu' %}
+          </div>
+          <div class="header-bottom-right">
+            <div class="toplink-item search">
+              {% include 'header-search' %}
+            </div>
+            <div class="toplink-item cart">
+              {% include 'header-cart' %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="header-mobile d-lg-none">
+    <div class="container">
+      <div class="d-flex justify-content-between">
+        <div class="logo-mobiles">
+          <div class="site-header-logo title-heading" itemscope itemtype="http://schema.org/Organization">
+            {% if settings.logo and settings.logo_img %}
+            <a href="/" itemprop="url" class="site-header-logo-image">
+              <img src="{{ settings.logo_mobile | img_url: '120x', scale: 3 }}"
+                   srcset="{{ settings.logo_mobile | img_url: '120x', scale: 3 }}"
+                   alt="{{ settings.logo_mobile.alt | default: shop.name }}"
+                   itemprop="logo">
+            </a>
+            {% else %}
+            <h2><a class="site-header-logo-link" href="/">{{ settings.logo_text }}</a></h2>
+            {% endif %}
+          </div>
+        </div>
+        <div class="group-nav">
+          <div class="group-nav__ico group-nav__menu">
+            <div class="mob-menu">
+              <i class="material-icons">&#xE8FE;</i>
+            </div>
+          </div>
+          <div class="group-nav__ico group-nav__search no__at">
+            <div class="btn-search-mobi dropdown-toggle">
+              <i class="material-icons">&#xE8B6;</i>
+            </div>
+            <div class="form_search dropdown-content" style="display: none;">
+              <form class="formSearch" action="/search" method="get">
+                <input type="hidden" name="type" value="product">
+                <input class="form-control" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off" />
+                <button class="btn btn-search" type="submit" >
+                  <span class="btnSearchText hidden">{{ 'general.search.search' | t }}</span>
+                  <i class="fa fa-search"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="group-nav__ico group-nav__cart no__at">
+            {% include 'header-cart-mobile' %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+{% if settings.header_float_enable %}
+<script>
+  $(window).scroll(function() {
+    if ($(this).scrollTop() >= 36) {
+      $('.header.header-fixed').addClass('stickytop');
+    }
+    else {
+      $('.header.header-fixed').removeClass('stickytop');
+    }
+  }); 
+</script>
+{% endif %}

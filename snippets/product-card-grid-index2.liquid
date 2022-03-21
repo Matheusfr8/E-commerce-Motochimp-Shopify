@@ -1,0 +1,219 @@
+{% if section.settings.image_size != blank %}
+{% assign image_size = section.settings.image_size %}
+{% else %}
+{% assign image_size = 'master' %}
+{% endif %}
+
+{% assign grid_image_scale = '2' %}
+
+{% assign on_sale = false %}
+{% assign sale_text = 'products.product.sale' | t %}
+{% if product.compare_at_price > product.price %}
+{% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% assign sold_out_text = 'products.product.sold_out' | t %}
+{% assign sTT = 'products.product.outOfStock' | t %}
+{% if product.available %}
+{% assign sold_out = false %}
+{% assign sTT = 'products.product.inStock' | t %}
+{% endif %}
+
+<div class="product-item" data-id="product-{{ product.id }}">
+  <div class="product-item-container grid-view-item {% if settings.hover-image == 'no-change' %}no-change{% endif %} {% if sold_out %} sold-out{% endif %} {% unless product.available %} product-price--sold-out grid-view-item--sold-out{% endunless %}">
+    <div class="left-block">
+      <div class="product-image-container product-image">
+        <a class="grid-view-item__link image-ajax" href="{{ product.url | within: collection }}">
+          <img class="img-responsive s-img lazyload" data-sizes="auto" src="{{ "product-loading.svg" | asset_url }}" data-src="{{ product.featured_image.src | product_img_url:image_size, crop:'center' }}" alt="{{ product.featured_image.alt }}" />
+        </a>
+        {% if product.tags contains "label" %}
+        <div class="label-info">
+          <span class="label-stock label label1 font-ct">{{ 'general.megamenu_icons.pre-order' | t }}</span>
+        </div>
+        {% endif %}
+        {% if product.tags contains "label2" %}
+        <div class="label-info">
+          <span class="label-stock label label2  font-ct">{{ 'general.megamenu_icons.best' | t }}</span>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if sold_out %}
+      <div class="label-sold-out font-ct">
+        <span>{{ 'products.product.sold_out_stock' | t }}</span>
+      </div>
+      {% endif %}
+      <div class="box-labels">
+        {% if compare_at_price != blank %}
+        <span class="price-old">{{ compare_at_price | money }} </span>
+        {% endif %}
+        {% if product.tags contains "New" %}
+        <span class="label-product label-new">{{ 'general.megamenu_icons.new' | t }}</span>
+        {% endif %}
+      </div>
+
+    </div>
+    <div class="right-block">
+      <div class="caption">
+        {% if settings.show-vendor %}
+        <div class="title-vendor font-ct">{{ product.vendor | link_to_vendor }}</div>
+        {% endif %}
+
+        {% if settings.show-title %}
+        <h4 class="title-product text-truncate"><a class="product-name" href="{{ product.url }}">{{ product.title | strip_html | truncate: settings.limit_title }}</a></h4>
+        {% endif %}
+
+        {% if settings.show-review %}
+        <div class="custom-reviews">          
+          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>          
+        </div>
+        {% endif %}
+
+        {% if settings.show-price %}
+        <div class="price">
+
+          <!-- snippet/product-price.liquid -->
+          {% if product.title %}
+          {%- assign compare_at_price = product.compare_at_price -%}
+          {%- assign price = product.price -%}
+          {%- assign price_varies = product.price_varies -%}
+          {%- assign available = product.available -%}
+          {% else %}
+          {%- assign compare_at_price = 1999 -%}
+          {%- assign price = 1999 -%}
+          {%- assign price_varies = false -%}
+          {%- assign available = true -%}
+          {% endif %}
+
+          {%- assign money_price = price | money -%}
+
+          {% if compare_at_price > price %}
+          {% if price_varies %}
+          <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+          <span class="price-new">{{ money_price }}</span>
+          {% else %}
+          <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+          <span class="price-new">{{ money_price }}</span>
+          {% endif %}
+          {% else %}
+
+          {% if price_varies %}
+          <span class="price-new">{{ money_price }}</span>
+          {% else %}
+          <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+          <span class="price-new">{{ money_price }}</span>
+          {% endif %}
+          {% endif %}
+
+        </div>
+        {% endif %}
+      </div>
+      <div class="button-link">
+        {% if sold_out %}
+        <button class="btn_sold_out btn-addToCart disabled" type="submit" value="Submit" disabled data-toggle="tooltip" title="{{ 'products.product.sold_out' | t }}">
+          <a class=""><i class="fa fa-shopping-cart"></i></a>
+        </button>
+        {% elsif product.variants.size > 1 %}
+        <div class="btn-button add-to-cart add-sellect">  
+          <a  href="{{ product.url | within: collection }}" class="btn_df grl" title="{{ 'products.product.select_options' | t }}"><i class="fa fa-shopping-cart"></i><span class=""></span></a>
+        </div>
+        {% else %}
+        <div class="btn-button add-to-cart action  {% if sold_out %}sold-out{% endif %}">    
+          <form action="/cart/add" method="post" class="variants" data-id="AddToCartForm-{{ product.id }}" enctype="multipart/form-data">   
+            <input type="hidden" name="id" value="{{ product.variants[0].id }}" />           
+            <a class="btn-addToCart grl btn_df" href="javascript:void(0)" title="{{ 'products.product.add_to_cart' | t }}"><i class="fa fa-shopping-cart"></i></a>
+          </form>  
+        </div>
+        {% endif %} 
+
+        {% include 'product-wishlist' %}
+
+        <div class="quickview-button">
+          <a class="quickview iframe-link d-none d-xl-block btn_df" href="javascript:void(0)" data-variants_id="{{ product.variants[0].id }}" data-toggle="modal" data-target="#myModal" data-id="{{ product.handle }}" title="{{ 'products.product.quick_view' | t }}"><i class="fa fa-search"></i><span class="hidden">{{ 'products.product.quick_view' | t }}</span></a>
+        </div>
+
+      </div>
+    </div> 
+  </div>
+  <div class="child-product-image">
+    <div class="product-photo-container slider-for horizontal">
+      {% for image in product.images %}
+      {% if forloop.first != true %}
+      <div class="thumb">
+        {% if section.settings.show_count_total %}
+        <div class="total-product">Include: {{ forloop.length }} Products</div>
+        {% endif %}
+        <img id="product-featured-image-{{image.id}}" class="product-featured-img" src="{{ image | img_url: 'original' }}" alt="{{ image.alt | escape }}"/>
+      </div>
+      {% endif %}
+      {% endfor %}
+
+    </div>
+
+    <div class="slider-nav horizontal">
+      {% for image in product.images %}
+      {% if forloop.first != true %}
+      <div class="item">
+        <img src="{{ image.src | product_img_url: '120x' }}" alt="{{ image.alt | escape }}">
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div> 
+  </div>
+</div>
+<script>
+  var slider = function() {
+    if (!$('.slider-for').hasClass('slick-initialized') && !$('.slider-nav').hasClass('slick-initialized')) {
+      $('.slider-for').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        infinite: true,
+        fade: true,
+        accessibility:false,
+        verticalSwiping: false,
+        {% if settings.enable_rtl %}rtl: true,{% endif %}
+        asNavFor: '.slider-nav'
+      });
+
+      $('.slider-nav').slick({
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        asNavFor: '.slider-for',
+        verticalSwiping: false,
+        dots: false,
+        arrows: false,
+        {% if settings.enable_rtl %}rtl: true,{% endif %}
+        accessibility:false,
+        focusOnSelect: true,
+        nextArrow: '<div class="slick-next"><i class="fa fa-angle-right"></i></div>',
+        prevArrow: '<div class="slick-prev"><i class="fa fa-angle-left"></i></div>',
+        responsive: [
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 1,
+              dots: false
+            }
+          },
+          {
+            breakpoint: 321,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 2,
+              dots: false
+            }
+          }
+        ]
+
+      });
+    }        
+  };
+
+  $(window).load(function() {
+    slider();  
+  });
+</script>

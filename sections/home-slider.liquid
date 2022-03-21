@@ -1,0 +1,510 @@
+{% assign autoplay			= section.settings.owl_autoplay  %}
+{% assign autospeed			= section.settings.owl_autoplay_speed  %}
+{% if section.blocks.size > 0 %}
+{{ 'ss_slider.css' | asset_url | stylesheet_tag }}
+<script src="{{'jquery.themepunch.tools.min.js' | asset_url}}" ></script>
+<script src="{{'jquery.themepunch.revolution.min.js' | asset_url}}" ></script>
+<div class="widget-slideshow widget-slideshow1 {% if section.settings.show_dot %}show_dot{% endif %}">
+  <div class="{% if section.settings.container_full %}container-full{% else %}container{% endif %}">
+    <div class="row">
+      <div class="col-slider col-12">
+        <div class="tp-banner-container" data-section-id="{{ section.id }}" data-section-type="slideshow-section" style="visibility: hidden; opacity: 0; height: {{ section.settings.start_height }}px;">
+          <span class="slider-preload" style="display: block;"></span>
+          <div class="tp-banner-{{ section.id }}" data-speed="{{ section.settings.delay_time }}">
+            <ul>
+              {% for block in section.blocks %}
+              {% if block.settings.image != blank %}
+              {% assign img_url = block.settings.image | img_url: 'x1024' %}
+              {% else %}
+              {% assign img_url = '1920x900.png' | asset_url %}
+              {% endif %}
+              <li data-transition="fade" data-slotamount="1" data-masterspeed="1000" {% if block.settings.banner_link != blank %}data-link="{{ block.settings.banner_link }}"{% endif %}>
+                <img src="{{ img_url }}" alt="{{ block.settings.image.alt }}" data-bgfit="cover" data-bgposition="center {{ block.settings.position }}" data-bgrepeat="no-repeat">
+                {% if block.settings.use_custom_html == '1' %}
+                {{ block.settings.code_html }}
+                {% else %}
+                {% capture ps_info %}{% if block.settings.position_info == "left" %}{{ block.settings.offset_info }}{% else %}{{ block.settings.position_info }}{% endif %}{% endcapture %}
+
+                {% capture animate %}{% if block.settings.position_info == "left" %}lfl{% elsif block.settings.position_info == "right" %}lfr{% else %}lfb{% endif %}{% endcapture %}
+
+                {% capture offset %}{% if block.settings.position_info == "left" %}0{% elsif block.settings.position_info == "right" %}-{{ block.settings.offset_info }}{% else %}0{% endif %}{% endcapture %}
+
+                {% if block.settings.show_info == 'yes' %}
+                <div class="caption stb {{ animate }} {% if block.settings.position_info == "center" %}a-center{% endif %}"
+                     data-x="{{ ps_info }}"
+                     data-y="center"
+                     data-speed="500"
+                     data-start="800"
+                     data-easing="Power4.easeOut"
+                     data-endspeed="300"
+                     data-endeasing="Power4.easeIn"
+                     data-captionhidden="off"
+                     style="z-index: 61;">
+                  {% if block.settings.text1 != '' %}
+                  <div class="tp-caption-slide-1" style="color: {{ block.settings.color_text1 }}; font-size: {{ block.settings.fontsize_text1 }}px; font-weight:{{ block.settings.fontweight_text1 }};text-align : {{ block.settings.text_align1 }}">{{ block.settings.text1 }}</div>
+                  {% endif %}
+                  {% if block.settings.text2 != '' %}
+                  <div class="tp-caption-slide-2" style="color: {{ block.settings.color_text2 }}; font-size: {{ block.settings.fontsize_text2 }}px; font-weight:{{ block.settings.fontweight_text2 }};text-align : {{ block.settings.text_align2 }}">{{ block.settings.text2 }}</div>
+                  {% endif %}
+                  {% if block.settings.text3 != '' %}
+                  <div class="tp-caption-slide-3" style="color: {{ block.settings.color_text3 }}; font-size: {{ block.settings.fontsize_text3 }}px; font-weight:{{ block.settings.fontweight_text3 }};text-align : {{ block.settings.text_align3 }}">{{ block.settings.text3 }}</div>
+                  {% endif %}
+                  {% if block.settings.text4 != '' %}
+                  <div class="tp-caption-slide-4" style="color: {{ block.settings.color_text4 }}; font-size: {{ block.settings.fontsize_text4 }}px; font-weight:{{ block.settings.fontweight_text4 }};text-align : {{ block.settings.text_align4 }}">{{ block.settings.text4 }}</div>
+                  {% endif %}
+                  {% if block.settings.show_button == 'yes' %}
+                  <div class="tp-caption-button" style="text-align : {{ block.settings.text_align_button }}"><a href="{{ block.settings.button_link }}" class="slide-link-button {{ block.settings.style_button }}" data-text="{{ section.settings.button_title }}" style="font-size: {{ block.settings.fontsize_button }}px; background-color: {{ block.settings.button_color_bg }}; color: {{ block.settings.button_color_text }};">{{ block.settings.button_title }}</a></div>
+                  {% endif %}                  
+                </div>
+                {% endif %}
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+            <div class="tp-bannertimer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+    var revapi;
+    jQuery(document).ready(function($) {
+      //$(window).load(function() {
+        $('.slider-preload').hide();
+        $('.tp-banner-container').css({'visibility': 'visible', 'opacity': '1'});
+        revapi = $('.tp-banner-{{ section.id }}').revolution({
+          delay:{{ section.settings.delay_time }},
+          startwidth: {{ section.settings.start_width }},
+          startheight:{{ section.settings.start_height }},
+          startWithSlide: 0,
+          hideThumbs:10,
+          fullWidth:"off",
+          navigationType: "{{ section.settings.navigation_type }}",
+          navigationStyle: "{{ section.settings.navigation_stype }}",
+          navigationArrows: "{{ section.settings.navigation }}",
+          fullScreen: 'off',
+          hideTimerBar: {% if section.settings.show_bannertimer %}'off'{% else %}'on'{% endif %}
+        })
+      //})
+    })
+  </script>
+{% endif %}
+{% schema %}
+  {
+    "name": "Home Slider",
+	"class" : "home-section",
+	"max_blocks": 12,
+    "settings": [
+		{
+          "type": "header",
+          "content": "Slider Settings"
+        },
+		{
+          "type": "checkbox",
+          "id": "container_full",
+          "label": "Show Container Full ?",
+          "default": true
+        },
+		{
+          "type": "checkbox",
+          "id": "show_bannertimer",
+          "label": "Show Icon Loading Timer",
+          "default": true
+        },
+		{
+          "type": "text",
+          "id": "start_width",
+          "label": "Slider Width",
+          "default": "1090"
+        },
+		{
+          "type": "text",
+          "id": "start_height",
+          "label": "Slider Height",
+          "default": "440"
+        },
+		{
+          "type": "checkbox",
+          "id": "show_dot",
+          "label": "Show dots ?",
+          "default": false
+        },
+		{
+          "type": "select",
+          "id": "delay_time",
+          "label": "Change slides every",
+          "options": [
+			{"value": "3000", "label": "3 seconds"},
+			{"value": "5000", "label": "5 seconds"},
+            {"value": "10000", "label": "10 seconds"},
+            {"value": "12000", "label": "12 seconds"},
+            {"value": "14000", "label": "14 seconds"},
+            {"value": "16000", "label": "16 seconds"},
+            {"value": "18000", "label": "18 seconds"},
+            {"value": "20000", "label": "20 seconds"},
+            {"value": "22000", "label": "22 seconds"},
+            {"value": "24000", "label": "24 seconds"},
+            {"value": "26000", "label": "26 seconds"},
+            {"value": "28000", "label": "28 seconds"}
+            
+          ],
+          "default": "16000"
+        },
+		{
+          "type": "select",
+          "id": "navigation",
+          "label": "Navigation Arrow",
+          "options": [
+            {"value": "solo", "label": "Solo"},
+            {"value": "none", "label": "None"}
+          ],
+          "default": "solo"
+        },
+		{
+          "type": "select",
+          "id": "navigation_type",
+          "label": "Navigation Type",
+          "options": [
+            {"value": "bullet", "label": "Bullet"},
+            {"value": "none", "label": "None"}
+          ],
+          "default": "bullet"
+        },
+		{
+          "type": "select",
+          "id": "navigation_stype",
+          "label": "Navigation Stype",
+          "options": [
+            {"value": "round", "label": "round"},
+            {"value": "square", "label": "square"}
+          ],
+          "default": "round"
+        }
+	],
+	"blocks": [
+      {
+        "type": "slider_list",
+        "name": "Slide",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "banner_link",
+            "label": "Link",
+            "info": "Optional. If button hide and link set = image is link"
+          },
+          {
+            "type": "radio",
+            "id": "position",
+            "label": "Image Position",
+            "options": [
+              {"value": "left", "label": "Left"},
+              {"value": "center", "label": "Center"},
+              {"value": "right", "label": "Right"}
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Slide Settings"
+          },
+          {
+            "type": "select",
+            "id": "show_info",
+            "label": "Show Info",
+            "default": "yes",
+            "options": [
+              {"value": "no", "label": "No"},
+              {"value": "yes", "label": "Yes"}
+            ]
+          },
+          {
+            "type": "radio",
+            "id": "position_info",
+            "label": "Info Position",
+            "options": [
+              {"value": "left", "label": "Left"},
+              {"value": "center", "label": "Center"},
+              {"value": "right", "label": "Right"}
+            ],
+            "default": "left"
+          },
+          {
+            "type": "text",
+            "id": "offset_info",
+            "label": "Left and Right Offset",
+            "default": "200",
+			"info": "Value is integer"
+          },
+          {
+            "type": "select",
+            "id": "show_button",
+            "label": "Show Button",
+            "default": "yes",
+            "options": [
+              {"value": "no", "label": "No"},
+              {"value": "yes", "label": "Yes"}
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_align_button",
+            "label": "Position Button",
+            "default": "left",
+            "options": [
+              {"value": "left", "label": "Align left"},
+              {"value": "center", "label": "Align Center"},
+			  {"value": "right", "label": "Align Rignt"}
+            ]
+          },
+          {
+            "type": "select",
+            "id": "style_button",
+            "label": "Style Button",
+            "default": "style1",
+            "options": [
+              {"value": "style1", "label": "Style 1"},
+              {"value": "style2", "label": "Style 2"}
+            ]
+          },
+          {
+            "type": "text",
+            "id": "button_title",
+            "label": "Button Name",
+            "default": "Buy now"
+          },
+		  {
+            "type": "url",
+            "id": "button_link",
+            "label": "Link Button"
+          },
+          {
+            "type": "color",
+            "id": "button_color_text",
+            "label": "Button Text Color",
+            "default": "#ffffff"
+          },
+		  {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontsize_button",
+            "label": "Font size button",
+			"default": "14"
+          },
+          {
+            "type": "color",
+            "id": "button_color_bg",
+            "label": "Button Background Color",
+            "default": "#000000"
+          },
+          {
+            "type": "header",
+            "content": "Text Settings"
+          },
+		{
+          "type": "header",
+          "content": "Text 1 Settings"
+        },
+          {
+            "type": "text",
+            "id": "text1",
+            "label": "Text 1",
+            "default": "Text 1"
+          },
+          {
+            "type": "color",
+            "id": "color_text1",
+            "label": "Color for Text 1",
+            "default": "#ffffff"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontsize_text1",
+            "label": "Font size for Text 1",
+			"default": "14"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontweight_text1",
+            "label": "Font Weight for Text 1",
+			"default": "700"
+          },
+          {
+            "type": "select",
+            "id": "text_align1",
+            "label": "Position Text",
+            "default": "left",
+            "options": [
+              {"value": "left", "label": "Align left"},
+              {"value": "center", "label": "Align Center"},
+			  {"value": "right", "label": "Align Rignt"}
+            ]
+          },
+
+		{
+          "type": "header",
+          "content": "Text 2 Settings"
+        },
+          {
+            "type": "text",
+            "id": "text2",
+            "label": "Text 2",
+            "default": "Text 2"
+          },		
+          {
+            "type": "color",
+            "id": "color_text2",
+            "label": "Color for Text 2",
+            "default": "#ffffff"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontsize_text2",
+            "label": "Font size for Text 2",
+			"default": "14"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontweight_text2",
+            "label": "Font Weight for Text 2",
+			"default": "700"
+          },
+          {
+            "type": "select",
+            "id": "text_align2",
+            "label": "Position Text",
+            "default": "left",
+            "options": [
+              {"value": "left", "label": "Align left"},
+              {"value": "center", "label": "Align Center"},
+			  {"value": "right", "label": "Align Rignt"}
+            ]
+          },
+		{
+          "type": "header",
+          "content": "Text 3 Settings"
+        },
+          {
+            "type": "text",
+            "id": "text3",
+            "label": "Text 3",
+            "default": "Text 3"
+          },
+          {
+            "type": "color",
+            "id": "color_text3",
+            "label": "Color for Text 3",
+            "default": "#ffffff"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontsize_text3",
+            "label": "Font size for Text 3",
+			"default": "14"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontweight_text3",
+            "label": "Font Weight for Text 3",
+			"default": "400"
+          },
+          {
+            "type": "select",
+            "id": "text_align3",
+            "label": "Position Text",
+            "default": "left",
+            "options": [
+              {"value": "left", "label": "Align left"},
+              {"value": "center", "label": "Align Center"},
+			  {"value": "right", "label": "Align Rignt"}
+            ]
+          },
+		{
+          "type": "header",
+          "content": "Text 4 Settings"
+        },
+          {
+            "type": "text",
+            "id": "text4",
+            "label": "Text 4",
+            "default": "Text 4"
+          },
+          {
+            "type": "color",
+            "id": "color_text4",
+            "label": "Color for Text 4",
+            "default": "#ffffff"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontsize_text4",
+            "label": "Font size for Text 4",
+			"default": "14"
+          },
+          {
+            "type": "text",
+            "info": "Value is integer",
+            "id": "fontweight_text4",
+            "label": "Font Weight for Text 4",
+			"default": "400"
+          },
+          {
+            "type": "select",
+            "id": "text_align4",
+            "label": "Position Text",
+            "default": "left",
+            "options": [
+              {"value": "left", "label": "Align left"},
+              {"value": "center", "label": "Align Center"},
+			  {"value": "right", "label": "Align Rignt"}
+            ]
+          }
+      	]
+      }
+	],
+	"presets": [
+      {
+        "name": "Home Slider",
+        "category": "Magentech"    ,
+            "blocks": [
+                {
+                    "type": "slider_list"
+                }
+            ]        
+      }
+  	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+.tp-banner-container{
+  width:100%;
+  position:relative;
+  padding:0;
+}
+.tp-banner{
+  width:100%;
+  position:relative;
+}
+.tp-banner-fullscreen-container {
+  width:100%;
+  position:relative;
+  padding:0;
+}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,123 @@
+<div class="widget_custombanner radius_3">
+  <div class="{% if section.settings.container_full %}container-full{% else %}container{% endif %}">
+    {% if section.settings.title != blank %}
+    <h3 class="widget-title">{{ section.settings.title }}</h3>
+    {% endif %}
+    <div class="widget-content banners">
+      <div class="item_banner column1">
+        <div class="row1">
+          <div class="banners">
+            {% if section.settings.link1 != blank %}
+            <a href="{{ section.settings.link1 }}" title="{{ section.settings.image1.alt | default: shop.name }}">{% endif %}
+              {% if section.settings.image1 != blank %}
+              <img class="img-responsive lazyload" data-sizes="auto" src="{{ "icon-loadings.svg" | asset_url }}" alt="{{ section.settings.image1.alt | default: shop.name }}" data-src="{{ section.settings.image1 | img_url: 'master' }}" />
+              {% else %}
+              <img class="img-responsive" alt="{{ shop.name }}" src="//placehold.it/960x800" />
+              {% endif %}
+              {% if section.settings.link1 != blank %}</a>{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="item_banner column2">
+        <div class="row1">
+          <div class="banners">
+            {% if section.settings.link2 != blank %}
+            <a href="{{ section.settings.link2 }}" title="{{ section.settings.image2.alt | default: shop.name }}">{% endif %}
+              {% if section.settings.image2 != blank %}
+              <img class="img-responsive lazyload" data-sizes="auto" src="{{ "icon-loadings.svg" | asset_url }}" alt="{{ section.settings.image2.alt | default: shop.name }}" data-src="{{ section.settings.image2 | img_url: 'master' }}" />
+              {% else %}
+              <img class="img-responsive" alt="{{ shop.name }}" src="//placehold.it/480x400" />
+              {% endif %}
+              {% if section.settings.link2 != blank %}</a>{% endif %}
+          </div>
+          <div class="banners">
+            {% if section.settings.link3 != blank %}
+            <a href="{{ section.settings.link3 }}" title="{{ section.settings.image3.alt | default: shop3.name }}">{% endif %}
+              {% if section.settings.image3 != blank %}
+              <img class="img-responsive lazyload" data-sizes="auto" src="{{ "icon-loadings.svg" | asset_url }}" alt="{{ section.settings.image3.alt | default: shop.name }}" data-src="{{ section.settings.image3 | img_url: 'master' }}" />
+              {% else %}
+              <img class="img-responsive" alt="{{ shop.name }}" src="//placehold.it/480x400" />
+              {% endif %}
+              {% if section.settings.link3 != blank %}</a>{% endif %}
+          </div>
+        </div>
+        <div class="row2">
+          <div class="banners">
+            {% if section.settings.link4 != blank %}
+            <a href="{{ section.settings.link4 }}" title="{{ section.settings.image4.alt | default: shop.name }}">{% endif %}
+              {% if section.settings.image4 != blank %}
+              <img class="img-responsive lazyload" data-sizes="auto" src="{{ "icon-loadings.svg" | asset_url }}" alt="{{ section.settings.image4.alt | default: shop.name }}" data-src="{{ section.settings.image4 | img_url: 'master' }}" />
+              {% else %}
+              <img class="img-responsive" alt="{{ shop.name }}" src="//placehold.it/960x400" />
+              {% endif %}
+              {% if section.settings.link4 != blank %}</a>{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Home Custom-Banner",
+  "class": "home-section",
+  "settings": [
+	{
+      "type": "checkbox",
+      "id": "container_full",
+      "label": "Show Container Full ?",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "link1",
+      "label": "Link 1",
+      "label": "Image link 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image1",
+      "label": "Banner image 1"
+    },
+    {
+      "type": "url",
+      "id": "link2",
+      "label": "Link 2",
+      "label": "Image link 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image2",
+      "label": "Banner image 2"
+    },
+    {
+      "type": "url",
+      "id": "link3",
+      "label": "Link 3",
+      "label": "Image link 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "image3",
+      "label": "Banner image 3"
+    },
+    {
+      "type": "url",
+      "id": "link4",
+      "label": "Link 4",
+      "label": "Image link 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "image4",
+      "label": "Banner image 4"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Custom-Banner",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

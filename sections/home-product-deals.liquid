@@ -1,0 +1,226 @@
+{% assign list_collection 	= section.settings.list_collection %}
+{% assign show_container	= section.settings.show_container    %}
+{%- assign img_url = section.settings.background_image | img_url: 'master' -%}
+
+<div class="section-deals"
+     style="background :{% if section.settings.background_image !=blank %} url('{{ img_url }}') no-repeat center; background-size: cover;
+            {%else%} {{section.settings.background_color}}{%endif%}">
+  <div class="{% if show_container %}container_full{% else %}container{% endif %}">
+    <div class="widget-deals">
+      <div class="column-left">
+        <div class="slider slider-single">
+          {% for product in collections[list_collection].products limit:3 %}  
+          <div class="left-block">
+            <img class="img-responsive" src="{{ product.featured_image.src | img_url: 'master' }}" alt="{{ product.featured_image.alt }}">              
+            <div class="box-labels">
+              {% if product.tags contains "New" %}
+              <span class="label-product label-new">{{ 'general.megamenu_icons.new' | t }}</span>
+              {% endif %}
+              {% assign on_sale = false %}
+              {% assign sale_text = 'products.product.sale' | t %}
+              {% if product.compare_at_price > product.price %}
+              {% assign on_sale = true %}
+              {% endif %}
+              {% if on_sale %}
+              <span class="label-product label-sale">
+                <span>{{ product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price | times: 100.0 | divided_by: product.selected_or_first_available_variant.compare_at_price | money_without_currency | replace: ',', '.' | times: 100 | remove: '.0'}}%</span><br> off</span>
+              {% endif %}
+            </div>
+          </div>
+          {% else %}
+          <a href="#" class="grid-view-item__link image-ajax">
+            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+            {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+          </a>
+          {% endfor %}
+        </div>
+        <div class="slider slider-nav">
+          {% for product in collections[list_collection].products limit:3 %}   
+          <img class="img-responsive" src="{{ product.featured_image.src | img_url: '200x' }}" alt="{{ product.featured_image.alt }}">              
+          {% else %}
+          {% for product in (1..3) %}
+          <div class="item" style="margin : 5px 0 5px 10px;">
+            <a href="#" class="grid-view-item__link image-ajax">
+              {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+              {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+            </a>
+          </div>
+          {% endfor %}
+          {% endfor %} 
+        </div>
+      </div>
+
+      <div class="column-right">
+        <div class="top-section">
+          {% if section.settings.title1 != blank %}
+          <div class="home-title">
+            {{ section.settings.title1 }}
+          </div>
+          {% endif %}
+          {% if section.settings.description != blank %}
+          <div class="description-deal">{{ section.settings.description }}</div>
+          {% endif %}
+          <div class="countdown_tabs">
+            <div class="countdown_inners" data-date="{{ section.settings.day_deals }}"></div>
+          </div>
+          {% if section.settings.title_link_sale != blank %}
+          <div class="button-more-infor">
+            <a href="{% if section.settings.link_sale != blank %}{{ section.settings.link_sale }}{% else %}#{% endif %}">{{ section.settings.title_link_sale }}</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+"name": "Home Deals",
+"class": "home-section",
+"settings":[
+{
+"type": "header",
+"content": "General Settings"
+},
+{
+"type": "checkbox",
+"id": "show_container",
+"label": "Full width",
+"default": true
+},
+{
+"type": "image_picker",
+"id": "background_image",
+"label": "Background image"
+},
+{
+"type": "color",
+"id": "background_color",
+"label": "Background color",
+"default": "#111111"
+},
+{
+"type": "collection",
+"id": "list_collection",
+"label": "Select Collection"
+},
+{
+"type": "text",
+"id": "title1",
+"label": "Title"
+},
+{
+"type": "text",
+"id": "description",
+"label": "Description",
+"default": "Come on baby, don’t fear the reaper, take him for a ride. Cras imperdiet gravida enim, et ullamcorper mi semper vitae, cras vel ligula at sem ultrices rutrum."
+},
+{
+"type": "text",
+"id": "day_deals",
+"label": "Discount Time",
+"default": "2019/12/12"
+},
+{
+"type": "header",
+"content": "Information Deals"
+}, 
+{
+"type": "text",
+"id": "title_link_sale",
+"label": "Title Link Sale",
+"default": "EXPLORE"
+},
+{
+"type": "url",
+"id": "link_sale",
+"label": "Link Sale"
+}
+],
+"presets": [
+{
+"name": "Home Deals",
+"category": "Product"
+}
+]
+}
+{% endschema %}
+
+<script>
+  //slick     
+  $('.slider-single').slick({
+    {% if settings.enable_rtl %}rtl : true,{% endif %}
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+    fade: false,
+    adaptiveHeight: true,
+    infinite: false,
+    useTransform: true,
+    accessibility: false,
+    speed: 400,
+    cssEase: 'cubic-bezier(0.77, 0, 0.18, 1)',
+  });
+
+  $('.slider-nav')
+  .on('init', function(event, slick) {
+    $('.slider-nav .slick-slide.slick-current').addClass('is-active');
+  })
+  .slick({
+    {% if settings.enable_rtl %}rtl : true,{% endif %}
+    slidesToShow:3,
+    slidesToScroll: 1,
+    dots: false,
+    focusOnSelect: false,
+    infinite: false,
+    vertical: true,
+    arrows: false,
+    verticalSwiping: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1
+        }
+      }, 
+      {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1
+        }
+      }, 
+      {
+        breakpoint: 420,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1
+        }
+      }]
+  });
+
+  $('.slider-single').on('afterChange', function(event, slick, currentSlide) {
+    $('.slider-nav').slick('slickGoTo', currentSlide);
+    var currrentNavSlideElem = '.slider-nav .slick-slide[data-slick-index="' + currentSlide + '"]';
+    $('.slider-nav .slick-slide.is-active').removeClass('is-active');
+    $(currrentNavSlideElem).addClass('is-active');
+  });
+
+  $('.slider-nav').on('click', '.slick-slide', function(event) {
+    event.preventDefault();
+    var goToSingleSlide = $(this).data('slick-index');
+
+    $('.slider-single').slick('slickGoTo', goToSingleSlide);
+  });
+
+  $(document ).ready(function() {
+    $('[data-date]').each(function() {
+      var $this = $(this), finalDate = $(this).data('date');
+      $this.countdown(finalDate, function(event) {
+        $this.html(event.strftime('<div class="deals-time day"><div class="num-time">%D</div><div class="title-time">days</div></div> <div class="deals-time hour"><div class="num-time">%H</div> <div class="title-time">hours</div></div><div class="deals-time minute"><div class="num-time">%M</div><div class="title-time">mins</div></div><div class="deals-time second"><div class="num-time">%S</div><div class="title-time">secs</div></div>'));
+      });
+    });
+  })
+</script>

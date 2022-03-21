@@ -1,0 +1,104 @@
+<div class="widget-instagram">
+  <div class="{% if section.settings.container_full %}container-full{% else %}container{% endif %}">
+    <div class="widget-content">
+      <div class="instagram">
+        <div class="block-content">
+          <div class="home-title">
+            {% if section.settings.title1_top != blank %} 
+            <h2>{{ section.settings.title1_top }}</h2>
+            {% endif %}
+            {% if section.settings.title2_top != blank %} 
+            <div class="description"> {{ section.settings.title2_top }}</div>
+            {% endif %}
+          </div>
+          <div id="instafeed{{ section.id }}" class="instagram-slide" 
+               data-id="instafeed{{ section.id }}"
+               data-userid="{{ section.settings.userid }}"
+               data-accesstoken="{{ section.settings.accessToken }}"
+               data-limit="{{ section.settings.limited }}"
+               data-resolution="{{ section.settings.resolution }}"
+               data-navigation="{{ section.settings.navigation }}">
+          </div>
+        </div>
+      </div>
+    </div>	
+  </div>
+</div>
+{% schema %}
+{
+"name": "Home Page Instagram",
+"class": "home-section gallery-section",
+"settings": [
+{
+"type": "header",
+"content": "Setting Instagram"
+},
+{
+"type": "checkbox",
+"id": "container_full",
+"label": "Show Container Full ?",
+"default": true
+},
+{
+"type": "text",
+"id": "title1_top",
+"label": "Text 1",
+"default": "SHOP CUSTOMER FAVORITES"
+},
+{
+"type": "text",
+"id": "title2_top",
+"label": "Text 2",
+"default": "@ FASHSHOP"
+},
+{
+"type": "text",
+"id": "userid",
+"label": "User Id (*)",
+"placeholder": "User Id",
+"default": "7703552354",
+"info": "[Where do I find User ID?](https:\/\/smashballoon.com\/instagram-feed\/find-instagram-user-id\/)"
+},
+{
+"type": "text",
+"id": "accessToken",
+"label": "Access Token (*)",
+"placeholder": "Access Token",
+"default": "7703552354.1677ed0.3e0ef38604284bc18f32f20fead87821",
+"info": "[Where do I find Access Token?](http:\/\/instagram.pixelunion.net\/)"
+},
+{
+"type": "text",
+"id": "limited",
+"placeholder": "Ex:8",
+"label": "Limit The Number of Images",
+"default": "10"
+},
+{
+"type": "select",
+"id": "resolution",
+"label": "Resolution of images",
+"options": [
+{
+"value": "thumbnail",
+"label": "Thumbnail (150x150)"
+},
+{
+"value": "low_resolution",
+"label": "Low Resolution (320x320)"
+},
+{
+"value": "standard_resolution",
+"label": "Standard Resolution (640x640)"
+}
+]
+}
+],
+"presets": [
+{
+"name": "Home Page Instagram",
+"category": "Image"
+}
+]
+}
+{% endschema %}
